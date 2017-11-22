@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feed</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="core/assets/vendor/jquery/jquery.min.js"></script>
+  <style>
+  body {
+    background-color: #eee;
+  }
+
+  .post {
+    margin: 10px 0;
+    padding: 10px 0;
+    background-color: white;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+  <h1>My Face</h1>
+  <div id="app"></div>
+
+
+  <div class="post row col-md-12">
+    <div class="col-md-2">
+      <img src="http://lorempixel.com/100/100/people/1" />
+    </div>
+    <div class="col-md-10">
+      <h3>Dave J</h3>
+      3:48pm 21 Nov 2017
+    </div>      
+    <div class="col-md-12">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum, perferendis, esse. Qui quidem eius voluptas earum, eaque voluptate, similique quo impedit deserunt, nesciunt, porro eveniet corrupti ullam? Beatae excepturi, velit.
+    </div>
+  </div>
+
+  <div class="post row col-md-12">
+    <div class="col-md-2">
+      <img src="http://lorempixel.com/100/100/people/2" />
+    </div>
+    <div class="col-md-10">
+      <h3>Dave J</h3>
+      3:48pm 21 Nov 2017
+    </div>      
+    <div class="col-md-12">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum, perferendis, esse. Qui quidem eius voluptas earum, eaque voluptate, similique quo impedit deserunt, nesciunt, porro eveniet corrupti ullam? Beatae excepturi, velit.
+    </div>
+  </div>
+
+  <div class="post row col-md-12">
+    <div class="col-md-2">
+      <img src="http://lorempixel.com/100/100/people/3" />
+    </div>
+    <div class="col-md-10">
+      <h3>Dave J</h3>
+      3:48pm 21 Nov 2017
+    </div>      
+    <div class="col-md-12">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum, perferendis, esse. Qui quidem eius voluptas earum, eaque voluptate, similique quo impedit deserunt, nesciunt, porro eveniet corrupti ullam? Beatae excepturi, velit.
+    </div>
+  </div>
+
+  </div>
+
+  <script>
+  var endpoint = 'http://localhost/search3/api/articles';
+  feedPromise = $.getJSON(endpoint);
+
+  feedPromise.done(function(data){
+    var html = '';
+    data.map(function(item) {
+      html += '<div class="post row col-md-12">' +
+      '<div class="col-md-2">' +
+      '<img src="' + item.user_pic + '" />' +
+      '</div>' +
+      '<div class="col-md-10">' +
+      '<h3>' + item.author + '</h3>' +
+      item.created +
+      '</div>' +
+      '<div class="col-md-12">' +
+      item.title +
+      '</div></div>';
+    });
+
+    $('#app').html(html);
+  })
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="core/assets/vendor/jquery/jquery.min.js"></script>
+
+</head>
+<body>
+  <h1>Web Services</h1>
+  <div class="form-group">
+    <textarea class="post-input form-control" placeholder="Escribe aqui tu publicación"></textarea>
+    <button id="post_button">Publicar</button>
+  </div>
+  <div id="app"></div>
+
+<script>
+
+  $('#post_button').click(function(e){
+    postInput = $('.post-input').val();
+    console.log(postInput);
+    if (myCsrfToken) {
+      postNode(myCsrfToken, createNode(postInput));
+    }
+  })
+
+  var siteURL = 'http://localhost/search3/';
+  var myCsrfToken;
+
+  function getCsrfToken(callback) {
+  jQuery
+    .get(siteURL + 'rest/session/token')
+    .done(function (data) {
+      var csrfToken = data;
+      callback(csrfToken);
+    });
+}
+
+function postNode(csrfToken, node) {
+  jQuery.ajax({
+    url: siteURL + 'entity/node?_format=hal_json',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/hal+json',
+      'X-CSRF-Token': csrfToken
+    },
+    data: JSON.stringify(node),
+    success: function (node) {
+      console.log(node);
+      jQuery('#app').html('Node created with nid=' + node.nid[0].value);
+    }
+  });
+}
+
+function createNode(title) {
+  return {
+            _links: {
+              type: {
+                href: siteURL + 'rest/type/node/article'
+              }
+            },
+            type: {
+              target_id: 'article'
+            },
+            title: {
+              value: title
+            },
+            body: {
+              value: 'Yo yo - Example node title2'
+            }
+          }; 
+}
+
+
+
+getCsrfToken(function (csrfToken) {
+  // postNode(csrfToken, newNode);
+  myCsrfToken = csrfToken;
+  console.log(csrfToken);
+});
+</script>
+</body>
+</html>
