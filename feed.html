@@ -22,6 +22,8 @@
   <div class="container">
 
   <h1>My Face</h1>
+    <textarea class="post-input form-control" placeholder="Escribe aqui tu publicación"></textarea>
+    <button id="post_button">Publicar</button>
   <div id="app"></div>
 
 
@@ -38,37 +40,11 @@
     </div>
   </div>
 
-  <div class="post row col-md-12">
-    <div class="col-md-2">
-      <img src="http://lorempixel.com/100/100/people/2" />
-    </div>
-    <div class="col-md-10">
-      <h3>Dave J</h3>
-      3:48pm 21 Nov 2017
-    </div>      
-    <div class="col-md-12">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum, perferendis, esse. Qui quidem eius voluptas earum, eaque voluptate, similique quo impedit deserunt, nesciunt, porro eveniet corrupti ullam? Beatae excepturi, velit.
-    </div>
-  </div>
-
-  <div class="post row col-md-12">
-    <div class="col-md-2">
-      <img src="http://lorempixel.com/100/100/people/3" />
-    </div>
-    <div class="col-md-10">
-      <h3>Dave J</h3>
-      3:48pm 21 Nov 2017
-    </div>      
-    <div class="col-md-12">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum, perferendis, esse. Qui quidem eius voluptas earum, eaque voluptate, similique quo impedit deserunt, nesciunt, porro eveniet corrupti ullam? Beatae excepturi, velit.
-    </div>
-  </div>
-
   </div>
 
   <script>
-  var endpoint = 'http://localhost/search3/api/articles';
-  feedPromise = $.getJSON(endpoint);
+  const endpointFeed = 'http://localhost/search3/api/articles';
+  feedPromise = $.getJSON(endpointFeed);
 
   feedPromise.done(function(data){
     var html = '';
@@ -87,7 +63,72 @@
     });
 
     $('#app').html(html);
+  });
+
+  const endpointUser = 'http://localhost/search3/user';
+
+  //click handler
+  $('#post_button').click(function(e){
+    postInput = $('.post-input').val();
+    console.log(postInput);
+    if (myCsrfToken) {
+      postNode(myCsrfToken, createNode(postInput));
+    }
   })
+
+  var siteURL = 'http://localhost/search3/';
+  var myCsrfToken;
+
+  function getCsrfToken(callback) {
+  jQuery
+    .get(siteURL + 'rest/session/token')
+    .done(function (data) {
+      var csrfToken = data;
+      callback(csrfToken);
+    });
+}
+
+function postNode(csrfToken, node) {
+  jQuery.ajax({
+    url: siteURL + 'entity/node?_format=hal_json',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/hal+json',
+      'X-CSRF-Token': csrfToken
+    },
+    data: JSON.stringify(node),
+    success: function (node) {
+      console.log(node);
+      jQuery('#app').html('Node created with nid=' + node.nid[0].value);
+    }
+  });
+}
+
+function createNode(title) {
+  return {
+            _links: {
+              type: {
+                href: siteURL + 'rest/type/node/article'
+              }
+            },
+            type: {
+              target_id: 'article'
+            },
+            title: {
+              value: title
+            },
+            body: {
+              value: 'Yo yo - Example node title2'
+            }
+          };
+}
+
+
+
+getCsrfToken(function (csrfToken) {
+  myCsrfToken = csrfToken;
+});
+
   </script>
 </body>
 </html>
