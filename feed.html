@@ -11,10 +11,22 @@
     background-color: #eee;
   }
 
+  * {
+    /*border: 1px solid orange;*/
+  }
   .post {
     margin: 10px 0;
-    padding: 10px 0;
+    padding: 10px 0 10px 0;
     background-color: white;
+  }
+
+  .photo {
+    float: left;
+    padding: 0 10px 10px 0;
+  }
+
+  .post-text {
+    clear: both;
   }
   </style>
 </head>
@@ -28,14 +40,14 @@
 
 
   <div class="post row col-md-12">
-    <div class="col-md-2">
-      <img src="http://lorempixel.com/100/100/people/1" />
+    <div class="col-md-6">
+      <img class="photo" src="http://lorempixel.com/100/100/people/1" />
+      <div class="post-details">
+        <h3>Dave J</h3>
+        3:48pm 21 Nov 2017
+      </div>
     </div>
-    <div class="col-md-10">
-      <h3>Dave J</h3>
-      3:48pm 21 Nov 2017
-    </div>      
-    <div class="col-md-12">
+    <div class="post-text col-md-12">
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum, perferendis, esse. Qui quidem eius voluptas earum, eaque voluptate, similique quo impedit deserunt, nesciunt, porro eveniet corrupti ullam? Beatae excepturi, velit.
     </div>
   </div>
@@ -43,21 +55,22 @@
   </div>
 
   <script>
-  const endpointFeed = 'http://localhost/search3/api/articles';
+
+  var siteURL = 'http://localhost/search3/';
+  const endpointFeed = siteURL + 'api/articles';
   feedPromise = $.getJSON(endpointFeed);
 
   feedPromise.done(function(data){
     var html = '';
     data.map(function(item) {
       html += '<div class="post row col-md-12">' +
-      '<div class="col-md-2">' +
-      '<img src="' + item.user_pic + '" />' +
-      '</div>' +
-      '<div class="col-md-10">' +
+      '<div class="col-md-6">' +
+      '<img class="photo" src="' + item.user_pic + '" />' +
+      '<div class="post-details">' +
       '<h3>' + item.author + '</h3>' +
       item.created +
-      '</div>' +
-      '<div class="col-md-12">' +
+      '</div></div>' +
+      '<div class="post-text col-md-12">' +
       item.title +
       '</div></div>';
     });
@@ -76,7 +89,6 @@
     }
   })
 
-  var siteURL = 'http://localhost/search3/';
   var myCsrfToken;
 
   function getCsrfToken(callback) {
