@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feed</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="core/assets/vendor/jquery/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.min.js"></script> 
+  <script src="https://npmcdn.com/babel-transform-in-browser@6.4.6/dist/btib.min.js"></script>
+  <style>
+  body {
+    background-color: #eee;
+  }
+
+  * {
+    /*border: 1px solid orange;*/
+  }
+  .post {
+    margin: 10px 0;
+    padding: 10px 0 10px 0;
+    background-color: white;
+  }
+
+  .photo {
+    float: left;
+    padding: 0 10px 10px 0;
+  }
+
+  .post-details h3 {
+    font-size: 1.5em;
+    padding-bottom: 0px;
+    margin: 0px;
+  }
+
+  .post-text {
+    clear: both;
+  }
+
+  .date {
+    color: #888;
+    font-size: 0.9em;
+  }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+  <h1>My Face</h1>
+    <textarea class="post-input form-control" placeholder="Escribe aqui tu publicación"></textarea>
+    <button id="post_button">Publicar</button>
+  <div id="app"></div>
+
+
+  <div class="post row col-md-12">
+    <div class="col-md-6">
+      <img class="photo" src="http://lorempixel.com/50/50/people/1" />
+      <div class="post-details">
+        <h3>Dave J</h3>
+        <span class="date">3:48pm 21 Nov 2017</span>
+      </div>
+    </div>
+    <div class="post-text col-md-12">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum, perferendis, esse. Qui quidem eius voluptas earum, eaque voluptate, similique quo impedit deserunt, nesciunt, porro eveniet corrupti ullam? Beatae excepturi, velit.
+    </div>
+  </div>
+
+  </div>
+
+  <script type="text/es2015">
+
+  var siteDomain = 'http://servinginperu.com/';
+  var siteURL = siteDomain + 'search3/';
+
+  const endpointFeed = siteURL + 'api/articles';
+
+  function Post( {userPicURL, author, created, title}) {
+    return (
+        <div className="post row col-md-12">
+          <div className="col-md-6">
+            <img className="photo" src={userPicURL} />
+            <div className="post-details">
+              <h3>{author}</h3>
+              <span className="date">{created}</span>
+            </div>
+          </div>
+          <div className="post-text col-md-12">
+            {title}
+          </div>
+        </div>
+      );
+  }
+
+
+  var feedPromise = $.getJSON(endpointFeed);
+
+  function Posts({data, url}) {
+    var postHTML = data.map(function(item) {
+      return (
+        <Post userPicURL={url + item.user_pic} author={item.author} created={item.created} title={item.title} />
+        );
+    });
+    return (<div>{postHTML}</div>);
+  }
+
+  feedPromise.done(function(data){
+    ReactDOM.render(<Posts data={data} url={siteDomain} />, document.getElementById('app'));
+  }).then(function(){
+    
+  });
+
+
+  const endpointUser = siteURL + 'user';
+
+  //click handler
+  $('#post_button').click(function(e){
+    var postInput = $('.post-input').val();
+    console.log(postInput, myCsrfToken);
+    if (myCsrfToken) {
+      postNode(myCsrfToken, createNode(postInput));
+    }
+  });
+
+  var myCsrfToken;
+
+  function getCsrfToken(callback) {
+  jQuery
+    .get(siteURL + 'rest/session/token')
+    .done(function (data) {
+      var csrfToken = data;
+      callback(csrfToken);
+    });
+}
+
+function postNode(csrfToken, node) {
+  jQuery.ajax({
+    url: siteURL + 'entity/node?_format=hal_json',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/hal+json',
+      'X-CSRF-Token': csrfToken
+    },
+    data: JSON.stringify(node),
+    success: function (node) {
+      console.log(node);
+      jQuery('#app').html('Node created with nid=' + node.nid[0].value);
+    }
+  });
+}
+
+function createNode(title) {
+  return {
+            _links: {
+              type: {
+                href: siteURL + 'rest/type/node/article'
+              }
+            },
+            type: {
+              target_id: 'article'
+            },
+            title: {
+              value: title
+            },
+            body: {
+              value: 'Yo yo - Example node title2'
+            }
+          };
+}
+
+getCsrfToken(function (csrfToken) {
+  console.log(csrfToken);
+  myCsrfToken = csrfToken;
+});
+
+
+function Welcome(props) {
+  return <h1>Hi, {props.name}</h1>;
+}
+
+const element = <Welcome name="Sarah" />;
+
+  </script>
+</body>
+</html>
