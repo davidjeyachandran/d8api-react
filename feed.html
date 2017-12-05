@@ -25,9 +25,21 @@
     padding: 0 10px 10px 0;
   }
 
+  .post-details h3 {
+    font-size: 1.5em;
+    padding-bottom: 0px;
+    margin: 0px;
+  }
+
   .post-text {
     clear: both;
   }
+
+  .date {
+    color: #888;
+    font-size: 0.9em;
+  }
+
   </style>
 </head>
 <body>
@@ -44,7 +56,7 @@
       <img class="photo" src="http://lorempixel.com/100/100/people/1" />
       <div class="post-details">
         <h3>Dave J</h3>
-        3:48pm 21 Nov 2017
+        <span class="date">3:48pm 21 Nov 2017</span>
       </div>
     </div>
     <div class="post-text col-md-12">
@@ -56,7 +68,9 @@
 
   <script>
 
-  var siteURL = 'http://localhost/search3/';
+  var siteURL = 'http://servinginperu.com/search3/';
+  var siteDomain = 'http://servinginperu.com/';
+
   const endpointFeed = siteURL + 'api/articles';
   feedPromise = $.getJSON(endpointFeed);
 
@@ -65,10 +79,10 @@
     data.map(function(item) {
       html += '<div class="post row col-md-12">' +
       '<div class="col-md-6">' +
-      '<img class="photo" src="' + item.user_pic + '" />' +
+      '<img class="photo" src="' + siteDomain + item.user_pic + '" />' +
       '<div class="post-details">' +
       '<h3>' + item.author + '</h3>' +
-      item.created +
+      '<span class="date">' + item.created + '</span>' +
       '</div></div>' +
       '<div class="post-text col-md-12">' +
       item.title +
@@ -78,7 +92,7 @@
     $('#app').html(html);
   });
 
-  const endpointUser = 'http://localhost/search3/user';
+  const endpointUser = siteURL + 'user';
 
   //click handler
   $('#post_button').click(function(e){
