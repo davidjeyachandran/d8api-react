@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drupal ReactJS</title>
+  <link href="build/bootstrap.min.css" rel="stylesheet">
+  <script src="build/jquery-2.2.4.min.js"></script>
+  <script src="build/react.min.js"></script>
+  <script src="build/react-dom.min.js"></script> 
+  <script src="build/btib.min.js"></script>
+  <script src="build/axios.min.js"></script>
+   <style>
+  body {
+    background-color: #eee;
+  }
+
+  * {
+    /*border: 1px solid orange;*/
+  }
+  .post {
+    margin: 10px 0;
+    padding: 10px 0 10px 0;
+    background-color: white;
+  }
+
+  .photo {
+    float: left;
+    padding: 0 10px 10px 0;
+  }
+
+  .post-details h3 {
+    font-size: 1.5em;
+    padding-bottom: 0px;
+    margin: 0px;
+  }
+
+  .post-text {
+    clear: both;
+  }
+
+  .date {
+    color: #888;
+    font-size: 0.9em;
+  }
+
+  </style>
+</head>
+<body>
+  <h1>Drupal ReactJS</h1>
+  <div id="app"></div>
+
+  <script type="text/es2015">
+    function Post( {userPicURL, author, created, title}) {
+      return (
+          <div className="post row col-md-12">
+            <div className="col-md-6">
+              <img className="photo" src={userPicURL} />
+              <div className="post-details">
+                <h3>{author}</h3>
+                <span className="date">{created}</span>
+              </div>
+            </div>
+            <div className="post-text col-md-12">
+              {title}
+            </div>
+          </div>
+        );
+    }
+
+    function Posts({data, siteDomain}) {
+      var postHTML = data.map(function(item) {
+        return (
+          <Post userPicURL={siteDomain + item.user_pic} author={item.author} created={item.created} title={item.title} />
+          );
+      });
+      return (<div>{postHTML}</div>);
+    }
+
+  class PostContainer extends React.Component {
+
+    constructor(props) {
+      super(props);
+      this.state = {data:[]};
+      this.login = this.loadFeed.bind(this);
+      this.siteURL = this.props.siteDomain + 'search3/';
+    }
+
+    componentWillMount() {
+      const endpointFeed = this.siteURL + 'api/articles';
+      this.loadFeed(endpointFeed);
+    }
+
+    loadFeed(endpointFeed) {
+      $.ajax({
+        url: endpointFeed,
+        dataType: 'json',
+        cache: false,
+        success: function(data) {
+          this.setState({data: data});
+          console.log(data);
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error(this.props.url, status, err.toString());
+        }.bind(this)
+      });
+    }
+
+    render() {
+      return <Posts data={this.state.data} siteDomain={this.props.siteDomain}/>;
+    }
+  }
+
+
+  class App extends React.Component {
+
+    constructor(props) {
+      super(props);
+      this.state = {isLoggedIn: false, csrfToken: ''};
+      this.siteURL = this.props.siteDomain + 'search3/';
+      console.log(this.siteURL);
+      this.login = this.login.bind(this);
+    }
+
+    componentDidMount() {
+      const inputUsername = 'David';
+      const inputPassword = 'password';
+      this.login(inputUsername, inputPassword);
+    }
+
+    getCsrfToken(callback) {
+    jQuery
+      .get(this.siteURL + 'rest/session/token')
+      .done(function (data) {
+        var csrfToken = data;
+        callback(csrfToken);
+      });
+    }
+
+    login(inputUsername, inputPassword) {
+      // var siteURL = 'http://servinginperu.com/search3/';
+      console.log(this.siteURL);
+      if (inputUsername != '' && inputPassword != '') {
+          this.getCsrfToken(function(csrfToken) {
+              this.setState({csrfToken: csrfToken});
+              $.ajax({
+                  url: this.siteURL + 'user/login?_format=json',
+                  type: 'POST',
+                  dataType: 'json',
+                  data: JSON.stringify({name: inputUsername, pass: inputPassword}),
+                  headers: {
+                      'X-CSRF-Token': csrfToken
+                  },
+              }).done(function(response) {
+                  if (response.current_user) {
+                      this.setState({isLoggedIn: true});
+                      console.log('The user is logged!');
+                  }
+              }.bind(this)).fail(function(jqXHR, textStatus) {
+                  console.log('Failed Login');
+              });
+          }.bind(this));
+      }
+    }
+
+
+    render() {
+          if (this.state.isLoggedIn){
+            return (<div>
+              <PostContainer siteDomain={this.props.siteDomain} csrftoken={this.state.csrfToken} />
+              </div>);
+          }
+          else {
+            return(<div>Not Logged in</div>);
+          }
+    }
+  }
+
+  ReactDOM.render(<App siteDomain="http://servinginperu.com/" />, document.getElementById('app'));
+
+  </script>
+</body>
+</html>
