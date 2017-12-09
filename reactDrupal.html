@@ -53,6 +53,21 @@
 
   <script type="text/es2015">
 
+  class PostBox extends React.Component {
+
+    constructor(props) {
+      super(props);
+    }
+
+    render() {
+      return (
+        <div>
+          <textarea className="post-input form-control" placeholder="Escribe aqui tu publicación"></textarea>
+          <button id="post_button">Publicar</button>
+        </div>
+        );
+    }
+  }
     function Post( {userPicURL, author, created, title}) {
       return (
           <div className="post row col-md-12">
@@ -167,10 +182,17 @@
       }
     }
 
+    handlePost (newPost) {
+      var newData = this.state.data;
+      console.log(newPost);
+      newData.unshift(newPost);
+      this.setState({data: newData});
+    }
 
     render() {
           if (this.state.isLoggedIn && this.state.csrfToken.length > 0){
             return (<div>
+              <PostBox handlepost={this.handlePost}/>
               <PostContainer siteDomain={this.props.siteDomain} csrfToken={this.state.csrfToken} />
               </div>);
           }
