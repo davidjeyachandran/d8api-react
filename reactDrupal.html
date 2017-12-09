@@ -97,8 +97,7 @@
         dataType: 'json',
         cache: true,
         headers: {
-            // 'X-CSRF-Token': this.props.csrfToken,
-            'Authorization': this.props.csrfToken
+            'X-CSRF-Token': this.props.csrfToken
         },
         success: function(data) {
           this.setState({data: data});
