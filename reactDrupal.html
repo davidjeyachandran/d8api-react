@@ -57,13 +57,22 @@
 
     constructor(props) {
       super(props);
+      this.handleClick = this.handleClick.bind(this);
+      // this.submitHandler = this.props.submitHandler;
+    }
+
+    handleClick() {
+      console.log('Click');
+      console.log(this.props.submitHandler);
+      myPost = 'Click';
+      this.props.submitHandler(myPost);
     }
 
     render() {
       return (
         <div>
           <textarea className="post-input form-control" placeholder="Escribe aqui tu publicación"></textarea>
-          <button id="post_button">Publicar</button>
+          <button id="post_button" onClick={this.handleClick}>Publicar</button>
         </div>
         );
     }
@@ -99,7 +108,6 @@
     constructor(props) {
       super(props);
       this.state = {data:[]};
-      this.login = this.loadFeed.bind(this);
       this.siteURL = this.props.siteDomain + 'search3/';
     }
 
@@ -109,7 +117,6 @@
     }
 
     loadFeed(endpointFeed) {
-      console.log('token=' + this.props.csrfToken);
       $.ajax({
         url: endpointFeed,
         dataType: 'json',
@@ -143,7 +150,6 @@
         headers: '',
       };
       this.siteURL = this.props.siteDomain + 'search3/';
-      console.log(this.siteURL);
       this.login = this.login.bind(this);
     }
 
@@ -155,7 +161,6 @@
     }
 
     login(inputUsername, inputPassword) {
-      console.log(this.siteURL);
       if (inputUsername != '' && inputPassword != '') {
               $.ajax({
                   url: this.siteURL + 'user/login?_format=json',
@@ -175,17 +180,17 @@
       }
     }
 
-    handlePost (newPost) {
+    submitHandler(newPost) {
       var newData = this.state.data;
-      console.log(newPost);
-      newData.unshift(newPost);
-      this.setState({data: newData});
+      console.log('yo - submitHandler Parent');
+      // newData.unshift(newPost);
+      // this.setState({data: newData});
     }
 
     render() {
           if (this.state.isLoggedIn && this.state.csrfToken.length > 0){
             return (<div>
-              <PostBox handlepost={this.handlePost}/>
+              <PostBox submitHandler={this.submitHandler}/>
               <PostContainer
                 siteDomain={this.props.siteDomain}
                 csrfToken={this.state.csrfToken}
@@ -198,7 +203,11 @@
     }
   }
 
-  ReactDOM.render(<App siteDomain="http://servinginperu.com/" />, document.getElementById('app'));
+  ReactDOM.render(<App siteDomain="http://localhost/" />,
+    document.getElementById('app'));
+
+  // ReactDOM.render(<App siteDomain="http://servinginperu.com/" />, document.getElementById('app'));
+
 
   </script>
 </body>
