@@ -47,9 +47,12 @@
 </head>
 <body>
   <h1>Drupal ReactJS</h1>
+    <textarea class="post-input form-control" placeholder="Escribe aqui tu publicación"></textarea>
+    <button id="post_button">Publicar</button>
   <div id="app"></div>
 
   <script type="text/es2015">
+
     function Post( {userPicURL, author, created, title}) {
       return (
           <div className="post row col-md-12">
