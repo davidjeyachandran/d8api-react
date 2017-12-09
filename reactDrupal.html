@@ -86,21 +86,26 @@
     }
 
     componentWillMount() {
-      const endpointFeed = this.siteURL + 'api/articles';
+      const endpointFeed = this.siteURL + 'api/articles?_format=json';
       this.loadFeed(endpointFeed);
     }
 
     loadFeed(endpointFeed) {
+      console.log('token=' + this.props.csrfToken);
       $.ajax({
         url: endpointFeed,
         dataType: 'json',
-        cache: false,
+        cache: true,
+        headers: {
+            // 'X-CSRF-Token': this.props.csrfToken,
+            'Authorization': this.props.csrfToken
+        },
         success: function(data) {
           this.setState({data: data});
           console.log(data);
         }.bind(this),
         error: function(xhr, status, err) {
-          console.error(this.props.url, status, err.toString());
+          console.error(endpointFeed, status, err.toString());
         }.bind(this)
       });
     }
@@ -137,36 +142,34 @@
     }
 
     login(inputUsername, inputPassword) {
-      // var siteURL = 'http://servinginperu.com/search3/';
       console.log(this.siteURL);
       if (inputUsername != '' && inputPassword != '') {
-          this.getCsrfToken(function(csrfToken) {
-              this.setState({csrfToken: csrfToken});
               $.ajax({
                   url: this.siteURL + 'user/login?_format=json',
                   type: 'POST',
                   dataType: 'json',
-                  data: JSON.stringify({name: inputUsername, pass: inputPassword}),
-                  headers: {
-                      'X-CSRF-Token': csrfToken
-                  },
+                  data: JSON.stringify({name: inputUsername, pass: inputPassword})
+                  // headers: {
+                  //     'X-CSRF-Token': csrfToken
+                  // },
               }).done(function(response) {
                   if (response.current_user) {
                       this.setState({isLoggedIn: true});
                       console.log('The user is logged!');
+                      console.log(response);
+                      this.setState({csrfToken: response.csrf_token});
                   }
               }.bind(this)).fail(function(jqXHR, textStatus) {
                   console.log('Failed Login');
               });
-          }.bind(this));
       }
     }
 
 
     render() {
-          if (this.state.isLoggedIn){
+          if (this.state.isLoggedIn && this.state.csrfToken.length > 0){
             return (<div>
-              <PostContainer siteDomain={this.props.siteDomain} csrftoken={this.state.csrfToken} />
+              <PostContainer siteDomain={this.props.siteDomain} csrfToken={this.state.csrfToken} />
               </div>);
           }
           else {
