@@ -58,20 +58,22 @@
     constructor(props) {
       super(props);
       this.handleClick = this.handleClick.bind(this);
-      // this.submitHandler = this.props.submitHandler;
     }
 
     handleClick() {
       console.log('Click');
-      console.log(this.props.submitHandler);
-      myPost = 'Click';
+      var postValue = document.getElementById('post_input').value;
+      var myPost = 'Click';
       this.props.submitHandler(myPost);
     }
 
     render() {
       return (
         <div>
-          <textarea className="post-input form-control" placeholder="Escribe aqui tu publicación"></textarea>
+          <textarea
+          id="post_input"
+          className="post-input form-control" placeholder="Escribe aqui tu publicación">
+          </textarea>
           <button id="post_button" onClick={this.handleClick}>Publicar</button>
         </div>
         );
@@ -151,6 +153,7 @@
       };
       this.siteURL = this.props.siteDomain + 'search3/';
       this.login = this.login.bind(this);
+      this.submitHandler = this.submitHandler.bind(this);
     }
 
     componentDidMount() {
@@ -180,11 +183,45 @@
       }
     }
 
-    submitHandler(newPost) {
-      var newData = this.state.data;
-      console.log('yo - submitHandler Parent');
-      // newData.unshift(newPost);
+    submitHandler(title) {
+      console.log('yo - submitHandler Parent' + this.state.csrfToken);
+      this.postNode(this.state.csrfToken, createNode(postInput));
       // this.setState({data: newData});
+    }
+
+    createNode(title) {
+      return {
+        _links: {
+          type: {
+            href: siteURL + 'rest/type/node/article'
+          }
+        },
+        type: {
+          target_id: 'article'
+        },
+        title: {
+          value: title
+        },
+        body: {
+          value: 'Yo yo - Example node title2'
+        }
+      };
+    }
+
+    postNode(csrfToken, node) {
+      jQuery.ajax({
+        url: siteURL + 'entity/node?_format=hal_json',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/hal+json',
+          'X-CSRF-Token': csrfToken
+        },
+        data: JSON.stringify(node),
+        success: function (node) {
+          console.log(node);
+          jQuery('#app').html('Node created with nid=' + node.nid[0].value);
+        }
+      });
     }
 
     render() {
