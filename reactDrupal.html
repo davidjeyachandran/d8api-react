@@ -151,7 +151,6 @@
       this.siteURL = this.props.siteDomain + 'search3/';
       this.login = this.login.bind(this);
       this.submitHandler = this.submitHandler.bind(this);
-      // this.createNode = this.createNode;
     }
 
     componentDidMount() {
@@ -182,9 +181,7 @@
     }
 
     submitHandler(title) {
-      console.log('yo - submitHandler Parent' + this.state.csrfToken);
       this.postNode(this.state.csrfToken, this.createNode(title));
-      // this.setState({data: newData});
     }
 
     createNode(title) {
@@ -201,7 +198,7 @@
           value: title
         },
         body: {
-          value: 'Yo yo - Example node title2'
+          value: ''
         }
       };
     }
@@ -210,10 +207,6 @@
       jQuery.ajax({
         url: this.siteURL + 'entity/node?_format=hal_json',
         method: 'POST',
-        // headers: {
-        //   'Content-Type': 'application/hal+json',
-        //   'X-CSRF-Token': csrfToken
-        // },
         headers: {
             'Content-Type': 'application/hal+json',
             "Authorization": this.state.headers
@@ -242,7 +235,7 @@
     }
   }
 
-  ReactDOM.render(<App siteDomain="http://servinginperu.com/" />,
+  ReactDOM.render(<App siteDomain="http://localhost/" />,
     document.getElementById('app'));
 
   // ReactDOM.render(<App siteDomain="http://servinginperu.com/" />, document.getElementById('app'));
