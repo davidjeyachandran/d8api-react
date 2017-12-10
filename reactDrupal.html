@@ -116,21 +116,22 @@
     }
 
     loadFeed(endpointFeed) {
-      $.ajax({
-        url: endpointFeed,
-        dataType: 'json',
-        cache: true,
-        headers: {
-            "Authorization": this.props.headers
-        },
-        success: function(data) {
+      var headers = new Headers({
+        'Content-Type': 'json',
+        'Authorization': 'Basic ' + btoa('David' + ":" + 'password')
+        });
+
+      fetch(endpointFeed, {
+        method: 'get',
+        headers: headers})
+      .then((response) => {return response.json()})
+      .then(function(data) {
           this.setState({data: data});
           console.log(data);
-        }.bind(this),
-        error: function(xhr, status, err) {
-          console.error(endpointFeed, status, err.toString());
-        }.bind(this)
-      });
+        }.bind(this))
+      .catch(function(err) {
+          console.log(err);
+        });
     }
 
     render() {
@@ -181,6 +182,11 @@
     }
 
     submitHandler(title) {
+      // var newData = this.state.data;
+      // console.log(newPost);
+      // newData.unshift(newPost);
+      // this.setState({data: newData});
+
       this.postNode(this.state.csrfToken, this.createNode(title));
     }
 
