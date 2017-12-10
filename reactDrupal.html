@@ -47,8 +47,6 @@
 </head>
 <body>
   <h1>Drupal ReactJS</h1>
-    <textarea class="post-input form-control" placeholder="Escribe aqui tu publicación"></textarea>
-    <button id="post_button">Publicar</button>
   <div id="app"></div>
 
   <script type="text/es2015">
@@ -63,8 +61,7 @@
     handleClick() {
       console.log('Click');
       var postValue = document.getElementById('post_input').value;
-      var myPost = 'Click';
-      this.props.submitHandler(myPost);
+      this.props.submitHandler(postValue);
     }
 
     render() {
@@ -154,6 +151,7 @@
       this.siteURL = this.props.siteDomain + 'search3/';
       this.login = this.login.bind(this);
       this.submitHandler = this.submitHandler.bind(this);
+      // this.createNode = this.createNode;
     }
 
     componentDidMount() {
@@ -185,7 +183,7 @@
 
     submitHandler(title) {
       console.log('yo - submitHandler Parent' + this.state.csrfToken);
-      this.postNode(this.state.csrfToken, createNode(postInput));
+      this.postNode(this.state.csrfToken, this.createNode(title));
       // this.setState({data: newData});
     }
 
@@ -193,7 +191,7 @@
       return {
         _links: {
           type: {
-            href: siteURL + 'rest/type/node/article'
+            href: this.siteURL + 'rest/type/node/article'
           }
         },
         type: {
@@ -210,11 +208,15 @@
 
     postNode(csrfToken, node) {
       jQuery.ajax({
-        url: siteURL + 'entity/node?_format=hal_json',
+        url: this.siteURL + 'entity/node?_format=hal_json',
         method: 'POST',
+        // headers: {
+        //   'Content-Type': 'application/hal+json',
+        //   'X-CSRF-Token': csrfToken
+        // },
         headers: {
-          'Content-Type': 'application/hal+json',
-          'X-CSRF-Token': csrfToken
+            'Content-Type': 'application/hal+json',
+            "Authorization": this.state.headers
         },
         data: JSON.stringify(node),
         success: function (node) {
@@ -240,7 +242,7 @@
     }
   }
 
-  ReactDOM.render(<App siteDomain="http://localhost/" />,
+  ReactDOM.render(<App siteDomain="http://servinginperu.com/" />,
     document.getElementById('app'));
 
   // ReactDOM.render(<App siteDomain="http://servinginperu.com/" />, document.getElementById('app'));
