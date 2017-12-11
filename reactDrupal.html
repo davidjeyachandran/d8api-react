@@ -76,9 +76,9 @@
         );
     }
   }
-    function Post( {userPicURL, author, created, title}) {
+    function Post( {id, userPicURL, author, created, title}) {
       return (
-          <div className="post row col-md-12">
+          <div key={id} className="post row col-md-12">
             <div className="col-md-6">
               <img className="photo" src={userPicURL} />
               <div className="post-details">
@@ -96,7 +96,7 @@
     function Posts({data, siteDomain}) {
       var postHTML = data.map(function(item) {
         return (
-          <Post userPicURL={siteDomain + item.user_pic} author={item.author} created={item.created} title={item.title} />
+          <Post id={item.nid} userPicURL={siteDomain + item.user_pic} author={item.author} created={item.created} title={item.title} />
           );
       });
       return (<div>{postHTML}</div>);
@@ -223,7 +223,7 @@
     }
   }
 
-  ReactDOM.render(<App siteDomain="http://localhost/" />,
+  ReactDOM.render(<App siteDomain="http://servinginperu.com/" />,
     document.getElementById('app'));
 
   // ReactDOM.render(<App siteDomain="http://servinginperu.com/" />, document.getElementById('app'));
