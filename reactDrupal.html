@@ -60,8 +60,8 @@
 
     handleClick() {
       console.log('Click');
-      var postValue = document.getElementById('post_input').value;
-      this.props.submitHandler(postValue);
+      var title = document.getElementById('post_input').value;
+      this.props.submitHandler(title);
     }
 
     render() {
@@ -124,7 +124,7 @@
       fetch(endpointFeed, {
         method: 'get',
         headers: headers})
-      .then((response) => {return response.json()})
+      .then((response) => response.json())
       .then(function(data) {
           this.setState({data: data});
           console.log(data);
@@ -150,7 +150,6 @@
         headers: '',
       };
       this.siteURL = this.props.siteDomain + 'search3/';
-      this.login = this.login.bind(this);
       this.submitHandler = this.submitHandler.bind(this);
     }
 
@@ -158,27 +157,8 @@
       const inputUsername = 'David';
       const inputPassword = 'password';
       this.setState({headers: 'Basic ' + btoa('David' + ":" + 'password')});
-      this.login(inputUsername, inputPassword);
-    }
-
-    login(inputUsername, inputPassword) {
-      if (inputUsername != '' && inputPassword != '') {
-              $.ajax({
-                  url: this.siteURL + 'user/login?_format=json',
-                  type: 'POST',
-                  dataType: 'json',
-                  data: JSON.stringify({name: inputUsername, pass: inputPassword})
-              }).done(function(response) {
-                  if (response.current_user) {
-                      this.setState({isLoggedIn: true});
-                      console.log('The user is logged!');
-                      console.log(response);
-                      this.setState({csrfToken: response.csrf_token});
-                  }
-              }.bind(this)).fail(function(jqXHR, textStatus) {
-                  console.log('Failed Login');
-              });
-      }
+      //this.login(inputUsername, inputPassword);
+      this.setState({isLoggedIn: true});
     }
 
     submitHandler(title) {
@@ -221,12 +201,14 @@
         success: function (node) {
           console.log(node);
           jQuery('#app').html('Node created with nid=' + node.nid[0].value);
+
         }
       });
+
     }
 
     render() {
-          if (this.state.isLoggedIn && this.state.csrfToken.length > 0){
+          if (this.state.isLoggedIn){
             return (<div>
               <PostBox submitHandler={this.submitHandler}/>
               <PostContainer
