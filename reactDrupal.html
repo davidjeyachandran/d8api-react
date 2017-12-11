@@ -97,17 +97,26 @@
       return (<div>{postHTML}</div>);
     }
 
-  class PostContainer extends React.Component {
+  class App extends React.Component {
 
     constructor(props) {
       super(props);
-      this.state = {data:[]};
+      this.state = {
+        isLoggedIn: false,
+        csrfToken: '',
+        headers: '',
+      };
       this.siteURL = this.props.siteDomain + 'search3/';
+      this.submitHandler = this.submitHandler.bind(this);
+      this.postNode = this.postNode.bind(this);
     }
 
-    componentWillMount() {
-      const endpointFeed = this.siteURL + 'api/articles?_format=json';
-      this.loadFeed(endpointFeed);
+    componentDidMount() {
+      const inputUsername = 'David';
+      const inputPassword = 'password';
+      this.setState({headers: 'Basic ' + btoa('David' + ":" + 'password')});
+      this.setState({isLoggedIn: true});
+      this.loadFeed(this.siteURL + 'api/articles?_format=json')
     }
 
     loadFeed(endpointFeed) {
@@ -127,34 +136,6 @@
       .catch(function(err) {
           console.log(err);
         });
-    }
-
-    render() {
-      return <Posts data={this.state.data} siteDomain={this.props.siteDomain}/>;
-    }
-  }
-
-
-  class App extends React.Component {
-
-    constructor(props) {
-      super(props);
-      this.state = {
-        isLoggedIn: false,
-        csrfToken: '',
-        headers: '',
-      };
-      this.siteURL = this.props.siteDomain + 'search3/';
-      this.submitHandler = this.submitHandler.bind(this);
-      this.postNode = this.postNode.bind(this);
-    }
-
-    componentDidMount() {
-      const inputUsername = 'David';
-      const inputPassword = 'password';
-      this.setState({headers: 'Basic ' + btoa('David' + ":" + 'password')});
-      //this.login(inputUsername, inputPassword);
-      this.setState({isLoggedIn: true});
     }
 
     submitHandler(title) {
@@ -185,7 +166,6 @@
         'Content-Type': 'application/hal+json',
         'Authorization': 'Basic ' + btoa('David' + ":" + 'password')
         });
-      console.log(this);
       fetch(this.siteURL + 'entity/node?_format=hal_json', {
         method: 'POST',
         body: JSON.stringify(node),
@@ -214,11 +194,8 @@
     render() {
           if (this.state.isLoggedIn){
             return (<div>
-              <PostBox submitHandler={this.submitHandler}/>
-              <PostContainer
-                siteDomain={this.props.siteDomain}
-                csrfToken={this.state.csrfToken}
-                headers={this.state.headers} />
+              <PostBox submitHandler={this.submitHandler} />
+              <Posts siteDomain={this.props.siteDomain} data={this.state.data} />
               </div>);
           }
           else {
