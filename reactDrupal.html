@@ -89,11 +89,17 @@
     }
 
     function Posts({data, siteDomain}) {
-      var postHTML = data.map(function(item) {
-        return (
-          <Post id={item.nid} userPicURL={siteDomain + item.user_pic} author={item.author} created={item.created} title={item.title} />
-          );
-      });
+      var postHTML = '';
+      if (Array.isArray(data)) {
+        postHTML = data.map(function(item) {
+          return (
+            <Post id={item.nid} userPicURL={siteDomain + item.user_pic} author={item.author} created={item.created} title={item.title} />
+            );
+        });
+      }
+      else {
+        postHTML='';
+      }
       return (<div>{postHTML}</div>);
     }
 
