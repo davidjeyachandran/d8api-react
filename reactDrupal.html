@@ -120,7 +120,7 @@
 
     componentDidMount() {
       this.setState({isLoggedIn: true});
-      this.loadFeed(this.siteURL + 'api/articles?_format=json')
+      this.loadFeed(this.siteURL + 'api/articles?_format=json');
     }
 
     loadFeed(endpointFeed) {
@@ -176,18 +176,8 @@
         headers: headers})
       .then((response) => response.json())
       .then(function(postResponse) {
-        console.log(postResponse);
-        var newData = this.state.data;
-        var newPost = {
-          id: postResponse.nid[0].value,
-          author: 'Quien es el autor',
-          created: postResponse.created[0].value,
-          title: postResponse.title[0].value,
-          user_pic: 'donde'
-        }
-        console.log(newPost);
-        newData.unshift(newPost);
-        this.setState({data: newData});
+        this.loadFeed(this.siteURL + 'api/articles?_format=json');
+
         }.bind(this))
       .catch(function(err) {
           console.log(err);
