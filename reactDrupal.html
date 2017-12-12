@@ -115,12 +115,10 @@
       this.siteURL = this.props.siteDomain + 'search3/';
       this.submitHandler = this.submitHandler.bind(this);
       this.postNode = this.postNode.bind(this);
+      this.authorization = 'Basic ' + btoa(this.props.username + ":" + this.props.password);
     }
 
     componentDidMount() {
-      const inputUsername = 'David';
-      const inputPassword = 'password';
-      this.setState({headers: 'Basic ' + btoa('David' + ":" + 'password')});
       this.setState({isLoggedIn: true});
       this.loadFeed(this.siteURL + 'api/articles?_format=json')
     }
@@ -128,7 +126,7 @@
     loadFeed(endpointFeed) {
       var headers = new Headers({
         'Content-Type': 'json',
-        'Authorization': 'Basic ' + btoa('David' + ":" + 'password')
+        'Authorization': this.authorization)
         });
 
       fetch(endpointFeed, {
@@ -170,7 +168,7 @@
     postNode(node) {
       var headers = new Headers({
         'Content-Type': 'application/hal+json',
-        'Authorization': 'Basic ' + btoa('David' + ":" + 'password')
+        'Authorization': this.authorization)
         });
       fetch(this.siteURL + 'entity/node?_format=hal_json', {
         method: 'POST',
@@ -210,11 +208,8 @@
     }
   }
 
-  ReactDOM.render(<App siteDomain="http://localhost/" />,
+  ReactDOM.render(<App siteDomain="http://localhost/" username="David" password="password" />,
     document.getElementById('app'));
-
-  // ReactDOM.render(<App siteDomain="http://servinginperu.com/" />, document.getElementById('app'));
-
 
   </script>
 </body>
