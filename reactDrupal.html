@@ -126,7 +126,7 @@
     loadFeed(endpointFeed) {
       var headers = new Headers({
         'Content-Type': 'json',
-        'Authorization': this.authorization)
+        'Authorization': this.authorization
         });
 
       fetch(endpointFeed, {
@@ -168,7 +168,7 @@
     postNode(node) {
       var headers = new Headers({
         'Content-Type': 'application/hal+json',
-        'Authorization': this.authorization)
+        'Authorization': this.authorization
         });
       fetch(this.siteURL + 'entity/node?_format=hal_json', {
         method: 'POST',
