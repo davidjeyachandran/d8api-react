@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="build/react.js"></script>
+  <script src="build/react-dom.min.js"></script> 
+  <script src="build/btib.min.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+  
+  <script type="text/es2015">
+
+  // var headers = new Headers({
+  //   'Content-Type': 'text/plain',
+  //   'X-My-Custom-Header': 'CustomValue'
+  // });
+
+  // console.log('Start');
+  // var myhtml = '';
+  // fetch('http://localhost/search3/api/articles', {
+  //   method: 'get',
+  //   headers: new Headers({
+  //   'Content-Type': 'text/plain',
+  //   'Authorization': 'Basic ' + btoa('David' + ":" + 'password')
+  //   })
+  //   }).then((response) => {return response.json()})
+  // .then(function(response) {
+  //     console.log(response);
+  //     myhtml = response.map((item) => {return '<li>' + item.title + '</li>'}).join('');
+  //     document.getElementById("app").innerHTML = '<ul>' + myhtml + '</ul>';
+  //   console.log(myhtml);
+  //   }).catch(function(err) {
+  //     console.log(err);
+  //   });
+
+
+// class Hola extends React.Component {
+//   render() {
+//     return <p>Hola {this.props.name}</p>;
+//   }
+// }
+
+    // class Hola extends React.Component {
+    //   render() {
+    //     return <p>Hola {this.props.name}</p>
+    //   }
+    // }
+
+
+    function Image({tipo}) {
+      return <img src={'https://loremflickr.com/200/200/' + tipo + '?q=' + Math.floor(Math.random() * 100)} />
+    }
+
+    function Images({tipo, num}) {
+      let html = [];
+      for(let i=1; i<=num; i++) {
+        html.push(<Image key={i} tipo={tipo} />);
+      }
+      return <div>{html}</div>;
+    }
+
+    // ReactDOM.render(
+    //   <div>
+    //   <Holas name="David" />
+    //   </div>,
+    //   document.getElementById('app')
+    // );
+
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+const element = <Welcome name="Sara" />;
+ReactDOM.render(
+  <div>
+    <Images tipo="batman" num="5" />
+    <Images tipo="superman" num="2" />
+    <Images tipo="thor" num="4" />
+  </div>,
+  document.getElementById('app')
+);
+
+  </script>
+</body>
+</html>
