@@ -55,11 +55,16 @@
 
     constructor(props) {
       super(props);
-      this.handleClick = this.handleClick.bind(this);
-      this.state = {postValue: 'Hola todos'}
+      this.handleChange = this.handleChange.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
+      this.state = {value: 'Hola Todos'};
     }
 
-    handleClick() {
+    handleChange(event) {
+      this.setState({value: event.target.value});
+    }
+
+    handleSubmit() {
       console.log('Click');
       var title = document.getElementById('post_input').value;
       this.props.submitHandler(title);
@@ -70,10 +75,11 @@
         <div>
           <textarea
           id="post_input"
-          value={this.state.postValue}
+          value={this.state.value}
+          onChange={this.handleChange}
           className="post-input form-control" placeholder="Escribe aqui tu publicación">
           </textarea>
-          <input type="submit" id="post_button" className="btn-default" onClick={this.handleClick} value="Publicar" />
+          <input type="submit" id="post_button" className="btn-default" onClick={this.handleSubmit} value="Publicar" />
         </div>
         );
     }
@@ -207,6 +213,9 @@
 
   ReactDOM.render(<App siteDomain="http://servinginperu.com/" siteDirectory="minired/" username="Dave" password="minired123" />,
     document.getElementById('app'));
+    // ReactDOM.render(<App siteDomain="http://localhost/" siteDirectory="search3/" username="David" password="minired123" />,
+    // document.getElementById('app'));
+
 
   </script>
 </body>
