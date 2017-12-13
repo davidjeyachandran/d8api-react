@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Drupal ReactJS</title>
   <link href="build/bootstrap.min.css" rel="stylesheet">
-  <script src="build/react.min.js"></script>
-  <script src="build/react-dom.min.js"></script> 
+  <script src="build/react.development.js"></script>
+  <script src="build/react-dom.development.js"></script> 
   <script src="build/btib.min.js"></script>
   <style>
   body {
@@ -42,8 +42,13 @@
 </head>
 <body>
   <h1>Drupal ReactJS</h1>
-  <div id="app"></div>
 
+  <div class="col-md-6">
+    <div id="app"></div>
+  </div>
+  <div class="col-md-6">
+    <div id="app2"></div>
+  </div>
   <script type="text/es2015">
 
   class PostBox extends React.Component {
@@ -51,6 +56,7 @@
     constructor(props) {
       super(props);
       this.handleClick = this.handleClick.bind(this);
+      this.state = {postValue: 'Hola todos'}
     }
 
     handleClick() {
@@ -64,16 +70,17 @@
         <div>
           <textarea
           id="post_input"
+          value={this.state.postValue}
           className="post-input form-control" placeholder="Escribe aqui tu publicación">
           </textarea>
-          <button id="post_button" onClick={this.handleClick}>Publicar</button>
+          <input type="submit" id="post_button" className="btn-default" onClick={this.handleClick} value="Publicar" />
         </div>
         );
     }
   }
-    function Post( {id, userPicURL, author, created, title}) {
+    function Post( {userPicURL, author, created, title}) {
       return (
-          <div key={id} className="post row col-md-12">
+          <div className="post row col-md-12">
             <div className="col-md-6">
               <img className="photo" src={userPicURL} />
               <div className="post-details">
@@ -93,7 +100,7 @@
       if (Array.isArray(data)) {
         postHTML = data.map(function(item) {
           return (
-            <Post id={item.nid} userPicURL={siteDomain + item.user_pic} author={item.author} created={item.created} title={item.title} />
+            <Post key={item.nid} userPicURL={siteDomain + item.user_pic} author={item.author} created={item.created} title={item.title} />
             );
         });
       }
@@ -112,7 +119,7 @@
         csrfToken: '',
         headers: '',
       };
-      this.siteURL = this.props.siteDomain + 'search3/';
+      this.siteURL = this.props.siteDomain + this.props.siteDirectory;
       this.submitHandler = this.submitHandler.bind(this);
       this.postNode = this.postNode.bind(this);
       this.authorization = 'Basic ' + btoa(this.props.username + ":" + this.props.password);
@@ -128,7 +135,7 @@
         'Content-Type': 'json',
         'Authorization': this.authorization
         });
-
+      console.log(this.authorization);
       fetch(endpointFeed, {
         method: 'get',
         headers: headers})
@@ -198,7 +205,7 @@
     }
   }
 
-  ReactDOM.render(<App siteDomain="http://localhost/" username="David" password="password" />,
+  ReactDOM.render(<App siteDomain="http://servinginperu.com/" siteDirectory="minired/" username="Dave" password="minired123" />,
     document.getElementById('app'));
 
   </script>
