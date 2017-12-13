@@ -49,24 +49,18 @@
     // }
 
 
-    function Image({tipo}) {
-      return <img src={'https://loremflickr.com/200/200/' + tipo + '?q=' + Math.floor(Math.random() * 100)} />
-    }
+function Image({tipo}) {
+  return <img src={'https://loremflickr.com/200/200/' + tipo + '?q=' + Math.floor(Math.random() * 100)} />
+}
 
-    function Images({tipo, num}) {
-      let html = [];
-      for(let i=1; i<=num; i++) {
-        html.push(<Image key={i} tipo={tipo} />);
-      }
-      return <div>{html}</div>;
-    }
+function Images({tipo, num}) {
+  let html = [];
+  for(let i=1; i<=num; i++) {
+    html.push(<Image key={i} tipo={tipo} />);
+  }
+  return <div>{html}</div>;
+}
 
-    // ReactDOM.render(
-    //   <div>
-    //   <Holas name="David" />
-    //   </div>,
-    //   document.getElementById('app')
-    // );
 
 function Welcome(props) {
   return <h1>Hello, {props.name}</h1>;
